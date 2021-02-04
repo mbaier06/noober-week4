@@ -34,6 +34,36 @@ async function pageLoaded() {
           </h1>
     `)
   }
+  // function to return passenger data for non-purple rides
+  function renderRide(ride) {
+    outputElement.insertAdjacentHTML("beforeend", 
+    `
+    <div class="border-4 border-gray-900 p-4 my-4 text-left">
+    <div class="flex">
+      <div class="w-1/2">
+        <h2 class="text-2xl py-1">${passengerName}</h2>
+        <p class="font-bold text-gray-600">${passengerPhone}</p>
+      </div>
+      <div class="w-1/2 text-right">
+        <span class="rounded-xl bg-gray-600 text-white p-2">
+          ${numberPassengers} passengers
+        </span>
+      </div>
+    </div>
+    <div class="mt-4 flex">
+      <div class="w-1/2">
+        <div class="text-sm font-bold text-gray-600">PICKUP</div>
+        <p>${passengerPickupAddressLine1}</p>
+        <p>${passengerPickupAddressLine2}</p>
+      </div>
+      <div class="w-1/2">
+        <div class="text-sm font-bold text-gray-600">DROPOFF</div>
+        <p>${passengerDropoffAddressLine1}</p>
+        <p>${passengerDropoffAddressLine2}</p>
+      </div>
+    </div>
+  </div>`)
+  }
 
   for (let i = 0; i < json.length; i++) {
     let ride = json[i]
@@ -44,44 +74,19 @@ async function pageLoaded() {
       for (let leg = 0; leg < ride.length; leg++) {
         passengerName = `${ride[leg].passengerDetails.first} ${ride[leg].passengerDetails.last}`
         passengerPhone = ride[leg].passengerDetails.phoneNumber
+        numberPassengers = ride[leg].numberOfPassengers
         passengerPickupAddressLine1 = ride[leg].pickupLocation.address
         passengerPickupAddressLine2 = `${ride[leg].pickupLocation.city}, ${ride[leg].pickupLocation.state} ${ride[leg].pickupLocation.zip}`
         passengerDropoffAddressLine1 = ride[leg].dropoffLocation.address
         passengerDropoffAddressLine2 = `${ride[leg].dropoffLocation.city}, ${ride[leg].dropoffLocation.state} ${ride[leg].dropoffLocation.zip}`
-        
-        outputElement.insertAdjacentHTML("beforeend", `
-        <div class="border-4 border-gray-900 p-4 my-4 text-left">
-          <div class="flex">
-            <div class="w-1/2">
-              <h2 class="text-2xl py-1">${passengerName}</h2>
-              <p class="font-bold text-gray-600">${passengerPhone}</p>
-            </div>
-            <div class="w-1/2 text-right">
-              <span class="rounded-xl bg-gray-600 text-white p-2">
-                ${ride[leg].numberOfPassengers} passengers
-              </span>
-            </div>
-          </div>
-          <div class="mt-4 flex">
-            <div class="w-1/2">
-              <div class="text-sm font-bold text-gray-600">PICKUP</div>
-              <p>${passengerPickupAddressLine1}</p>
-              <p>${passengerPickupAddressLine2}</p>
-            </div>
-            <div class="w-1/2">
-              <div class="text-sm font-bold text-gray-600">DROPOFF</div>
-              <p>${passengerDropoffAddressLine1}</p>
-              <p>${passengerDropoffAddressLine2}</p>
-            </div>
-          </div>
-        </div>`)
+        renderRide(ride)
       }
     } else if (ride.length == 1 && ride[0].purpleRequested == true) {
           levelOfService = "Noober Purple"
           renderLevelOfServicePurple(levelOfService)
-          
           passengerName = `${ride[0].passengerDetails.first} ${ride[0].passengerDetails.last}`
           passengerPhone = ride[0].passengerDetails.phoneNumber
+          numberPassengers = ride[0].numberOfPassengers
           passengerPickupAddressLine1 = ride[0].pickupLocation.address
           passengerPickupAddressLine2 = `${ride[0].pickupLocation.city}, ${ride[0].pickupLocation.state} ${ride[0].pickupLocation.zip}`
           passengerDropoffAddressLine1 = ride[0].dropoffLocation.address
@@ -95,7 +100,7 @@ async function pageLoaded() {
             </div>
             <div class="w-1/2 text-right">
             <span class="rounded-xl bg-purple-600 text-white p-2">
-              ${ride[0].numberOfPassengers} passengers
+              ${numberPassengers} passengers
             </span>
             </div>
           </div>
@@ -117,73 +122,23 @@ async function pageLoaded() {
         renderLevelOfService(levelOfService)
         passengerName = `${ride[0].passengerDetails.first} ${ride[0].passengerDetails.last}`
         passengerPhone = ride[0].passengerDetails.phoneNumber
+        numberPassengers = ride[0].numberOfPassengers
         passengerPickupAddressLine1 = ride[0].pickupLocation.address
         passengerPickupAddressLine2 = `${ride[0].pickupLocation.city}, ${ride[0].pickupLocation.state} ${ride[0].pickupLocation.zip}`
         passengerDropoffAddressLine1 = ride[0].dropoffLocation.address
         passengerDropoffAddressLine2 = `${ride[0].dropoffLocation.city}, ${ride[0].dropoffLocation.state} ${ride[0].dropoffLocation.zip}`
-
-        outputElement.insertAdjacentHTML("beforeend", `
-        <div class="border-4 border-gray-900 p-4 my-4 text-left">
-            <div class="flex">
-              <div class="w-1/2">
-                <h2 class="text-2xl py-1">${passengerName}</h2>
-                <p class="font-bold text-gray-600">${passengerPhone}</p>
-              </div>
-              <div class="w-1/2 text-right">
-              <span class="rounded-xl bg-gray-600 text-white p-2">
-              ${ride[0].numberOfPassengers} passengers
-              </span>
-              </div>
-            </div>
-            <div class="mt-4 flex">
-              <div class="w-1/2">
-                <div class="text-sm font-bold text-gray-600">PICKUP</div>
-                <p>${passengerPickupAddressLine1}</p>
-                <p>${passengerPickupAddressLine2}</p>
-              </div>
-              <div class="w-1/2">
-                <div class="text-sm font-bold text-gray-600">DROPOFF</div>
-                <p>${passengerDropoffAddressLine1}</p>
-                <p>${passengerDropoffAddressLine2}</p>
-              </div>
-            </div>
-          </div>`)
+        renderRide(ride)
       } else {
         levelOfService = "Noober X"
        renderLevelOfService(levelOfService)
-       
        passengerName = `${ride[0].passengerDetails.first} ${ride[0].passengerDetails.last}`
        passengerPhone = ride[0].passengerDetails.phoneNumber
+       numberPassengers = ride[0].numberOfPassengers
        passengerPickupAddressLine1 = ride[0].pickupLocation.address
        passengerPickupAddressLine2 = `${ride[0].pickupLocation.city}, ${ride[0].pickupLocation.state} ${ride[0].pickupLocation.zip}`
        passengerDropoffAddressLine1 = ride[0].dropoffLocation.address
        passengerDropoffAddressLine2 = `${ride[0].dropoffLocation.city}, ${ride[0].dropoffLocation.state} ${ride[0].dropoffLocation.zip}`
-        outputElement.insertAdjacentHTML("beforeend", `
-        <div class="border-4 border-gray-900 p-4 my-4 text-left">
-            <div class="flex">
-              <div class="w-1/2">
-                <h2 class="text-2xl py-1">${passengerName}</h2>
-                <p class="font-bold text-gray-600">${passengerPhone}</p>
-              </div>
-              <div class="w-1/2 text-right">
-              <span class="rounded-xl bg-gray-600 text-white p-2">
-              ${ride[0].numberOfPassengers} passengers
-              </span>
-              </div>
-            </div>
-            <div class="mt-4 flex">
-              <div class="w-1/2">
-                <div class="text-sm font-bold text-gray-600">PICKUP</div>
-                <p>${passengerPickupAddressLine1}</p>
-                <p>${passengerPickupAddressLine2}</p>
-              </div>
-              <div class="w-1/2">
-                <div class="text-sm font-bold text-gray-600">DROPOFF</div>
-                <p>${passengerDropoffAddressLine1}</p>
-                <p>${passengerDropoffAddressLine2}</p>
-              </div>
-            </div>
-          </div>`)
+        renderRide(ride)
       } 
   }
 }
