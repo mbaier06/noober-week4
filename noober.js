@@ -14,22 +14,40 @@ async function pageLoaded() {
   let levelOfService
   let outputElement = document.querySelector('.rides')
 
+  // function to return header for non-purple rides
+  function renderLevelOfService(levelOfService) {
+    outputElement.insertAdjacentHTML("beforeend", 
+    `
+    <h1 class="inline-block mt-8 px-4 py-2 rounded-xl text-2xl bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-500">
+    <i class="fas fa-car-side"></i>
+    <span>${levelOfService}</span>
+    </h1>
+    `)
+  }
+  // function to return header for purple rides
+  function renderLevelOfServicePurple(levelOfService) {
+    outputElement.insertAdjacentHTML("beforeend", 
+    `
+    <h1 class="inline-block mt-8 px-4 py-2 rounded-xl text-2xl bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-500">
+          <i class="fas fa-car-side"></i>
+          <span>${levelOfService}</span>
+          </h1>
+    `)
+  }
+
   for (let i = 0; i < json.length; i++) {
-    if (json[i].length > 1) {
+    let ride = json[i]
+    if (ride.length > 1) {
       levelOfService = "Noober Pool"
-      outputElement.insertAdjacentHTML("beforeend", `
-      <h1 class="inline-block mt-8 px-4 py-2 rounded-xl text-2xl bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-500">
-      <i class="fas fa-car-side"></i>
-      <span>${levelOfService}</span>
-      </h1>`)
+      renderLevelOfService(levelOfService)
       // nested for loop for passenger data for multiple legs
-      for (let leg = 0; leg < json[i].length; leg++) {
-        passengerName = `${json[i][leg].passengerDetails.first} ${json[i][leg].passengerDetails.last}`
-        passengerPhone = json[i][leg].passengerDetails.phoneNumber
-        passengerPickupAddressLine1 = json[i][leg].pickupLocation.address
-        passengerPickupAddressLine2 = `${json[i][leg].pickupLocation.city}, ${json[i][leg].pickupLocation.state} ${json[i][leg].pickupLocation.zip}`
-        passengerDropoffAddressLine1 = json[i][leg].dropoffLocation.address
-        passengerDropoffAddressLine2 = `${json[i][leg].dropoffLocation.city}, ${json[i][leg].dropoffLocation.state} ${json[i][leg].dropoffLocation.zip}`
+      for (let leg = 0; leg < ride.length; leg++) {
+        passengerName = `${ride[leg].passengerDetails.first} ${ride[leg].passengerDetails.last}`
+        passengerPhone = ride[leg].passengerDetails.phoneNumber
+        passengerPickupAddressLine1 = ride[leg].pickupLocation.address
+        passengerPickupAddressLine2 = `${ride[leg].pickupLocation.city}, ${ride[leg].pickupLocation.state} ${ride[leg].pickupLocation.zip}`
+        passengerDropoffAddressLine1 = ride[leg].dropoffLocation.address
+        passengerDropoffAddressLine2 = `${ride[leg].dropoffLocation.city}, ${ride[leg].dropoffLocation.state} ${ride[leg].dropoffLocation.zip}`
         
         outputElement.insertAdjacentHTML("beforeend", `
         <div class="border-4 border-gray-900 p-4 my-4 text-left">
@@ -40,7 +58,7 @@ async function pageLoaded() {
             </div>
             <div class="w-1/2 text-right">
               <span class="rounded-xl bg-gray-600 text-white p-2">
-                ${json[i][leg].numberOfPassengers} passengers
+                ${ride[leg].numberOfPassengers} passengers
               </span>
             </div>
           </div>
@@ -58,13 +76,16 @@ async function pageLoaded() {
           </div>
         </div>`)
       }
-    } else if (json[i].length == 1 && json[i][0].purpleRequested == true) {
+    } else if (ride.length == 1 && ride[0].purpleRequested == true) {
           levelOfService = "Noober Purple"
-          outputElement.insertAdjacentHTML("beforeend", `
-          <h1 class="inline-block mt-8 px-4 py-2 rounded-xl text-2xl bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-500">
-          <i class="fas fa-car-side"></i>
-          <span>${levelOfService}</span>
-          </h1>`)
+          renderLevelOfServicePurple(levelOfService)
+          
+          passengerName = `${ride[0].passengerDetails.first} ${ride[0].passengerDetails.last}`
+          passengerPhone = ride[0].passengerDetails.phoneNumber
+          passengerPickupAddressLine1 = ride[0].pickupLocation.address
+          passengerPickupAddressLine2 = `${ride[0].pickupLocation.city}, ${ride[0].pickupLocation.state} ${ride[0].pickupLocation.zip}`
+          passengerDropoffAddressLine1 = ride[0].dropoffLocation.address
+          passengerDropoffAddressLine2 = `${ride[0].dropoffLocation.city}, ${ride[0].dropoffLocation.state} ${ride[0].dropoffLocation.zip}`
           outputElement.insertAdjacentHTML("beforeend", `
           <div class="border-4 border-purple-500 p-4 my-4 text-left">
           <div class="flex">
@@ -74,7 +95,7 @@ async function pageLoaded() {
             </div>
             <div class="w-1/2 text-right">
             <span class="rounded-xl bg-purple-600 text-white p-2">
-              ${json[i][0].numberOfPassengers} passengers
+              ${ride[0].numberOfPassengers} passengers
             </span>
             </div>
           </div>
@@ -91,13 +112,16 @@ async function pageLoaded() {
             </div>
           </div>
         </div>`)
-      } else if (json[i].length == 1 && json[i][0].numberOfPassengers > 3) {
+      } else if (ride.length == 1 && ride[0].numberOfPassengers > 3) {
         levelOfService = "Noober XL"
-        outputElement.insertAdjacentHTML("beforeend", `
-        <h1 class="inline-block mt-8 px-4 py-2 rounded-xl text-2xl bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-500">
-        <i class="fas fa-car-side"></i>
-        <span>${levelOfService}</span>
-        </h1>`)
+        renderLevelOfService(levelOfService)
+        passengerName = `${ride[0].passengerDetails.first} ${ride[0].passengerDetails.last}`
+        passengerPhone = ride[0].passengerDetails.phoneNumber
+        passengerPickupAddressLine1 = ride[0].pickupLocation.address
+        passengerPickupAddressLine2 = `${ride[0].pickupLocation.city}, ${ride[0].pickupLocation.state} ${ride[0].pickupLocation.zip}`
+        passengerDropoffAddressLine1 = ride[0].dropoffLocation.address
+        passengerDropoffAddressLine2 = `${ride[0].dropoffLocation.city}, ${ride[0].dropoffLocation.state} ${ride[0].dropoffLocation.zip}`
+
         outputElement.insertAdjacentHTML("beforeend", `
         <div class="border-4 border-gray-900 p-4 my-4 text-left">
             <div class="flex">
@@ -107,7 +131,7 @@ async function pageLoaded() {
               </div>
               <div class="w-1/2 text-right">
               <span class="rounded-xl bg-gray-600 text-white p-2">
-              ${json[i][0].numberOfPassengers} passengers
+              ${ride[0].numberOfPassengers} passengers
               </span>
               </div>
             </div>
@@ -126,11 +150,14 @@ async function pageLoaded() {
           </div>`)
       } else {
         levelOfService = "Noober X"
-        outputElement.insertAdjacentHTML("beforeend", `
-        <h1 class="inline-block mt-8 px-4 py-2 rounded-xl text-2xl bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-500">
-        <i class="fas fa-car-side"></i>
-        <span>${levelOfService}</span>
-        </h1>`)
+       renderLevelOfService(levelOfService)
+       
+       passengerName = `${ride[0].passengerDetails.first} ${ride[0].passengerDetails.last}`
+       passengerPhone = ride[0].passengerDetails.phoneNumber
+       passengerPickupAddressLine1 = ride[0].pickupLocation.address
+       passengerPickupAddressLine2 = `${ride[0].pickupLocation.city}, ${ride[0].pickupLocation.state} ${ride[0].pickupLocation.zip}`
+       passengerDropoffAddressLine1 = ride[0].dropoffLocation.address
+       passengerDropoffAddressLine2 = `${ride[0].dropoffLocation.city}, ${ride[0].dropoffLocation.state} ${ride[0].dropoffLocation.zip}`
         outputElement.insertAdjacentHTML("beforeend", `
         <div class="border-4 border-gray-900 p-4 my-4 text-left">
             <div class="flex">
@@ -140,7 +167,7 @@ async function pageLoaded() {
               </div>
               <div class="w-1/2 text-right">
               <span class="rounded-xl bg-gray-600 text-white p-2">
-              ${json[i][0].numberOfPassengers} passengers
+              ${ride[0].numberOfPassengers} passengers
               </span>
               </div>
             </div>
